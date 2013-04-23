@@ -1,5 +1,5 @@
 getClipboardData = function (event, callback) {
-    var textElement = $(event.target),
+    var textElement = event.target,
         text = '',
         newText,
         selectionStart,
@@ -14,18 +14,18 @@ getClipboardData = function (event, callback) {
         text = window.clipboardData.getData('Text');
         callback && callback(text);
     } else {
-        selectionStart = textElement.get(0).selectionStart;
-        oldTextLength = self.getLength();
+        selectionStart = textElement.selectionStart;
+        oldTextLength = textElement.length;
         setTimeout(function () {
-            newText = self.get();
-            selectionEnd = selectionStart + self.getLength() - oldTextLength;
+            newText = textElement.value;
+            selectionEnd = selectionStart + newText.length - oldTextLength;
             text = newText.slice(selectionStart, selectionEnd);
-            textElement.val( newText.slice(0, selectionStart) + newText.slice(selectionEnd) );
-            textElement.get(0).setSelectionRange(selectionStart, selectionStart);
+            textElement.value = newText.slice(0, selectionStart) + newText.slice(selectionEnd);
+            textElement.setSelectionRange(selectionStart, selectionStart);
             callback && callback(text);
             setTimeout(function () {
                 cursorPosition = selectionStart + text.length;
-                textElement.get(0).setSelectionRange(cursorPosition, cursorPosition);
+                textElement.setSelectionRange(cursorPosition, cursorPosition);
             });
         });
     }
